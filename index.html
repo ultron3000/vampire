@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>007</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: black;
+      color: #ffcc00;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+    .movies {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .movie {
+      background: #222;
+      border: 2px solid #ffcc00;
+      border-radius: 12px;
+      width: 200px;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .movie:hover {
+      transform: scale(1.05);
+      background: #333;
+    }
+    .movie img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .movie-title {
+      margin-top: 10px;
+      font-size: 1em;
+      font-weight: bold;
+    }
+  
+    @media (max-width: 600px) {
+      .movies {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      .movie {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .movie img {
+        height: auto;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>🚨 007 Cinematic Universe</h1>
+
+<div class="movies" id="movies"></div>
+
+<script>
+const movies = [
+  { title: "Blade-1998", video: "https://sskt.monkberga.sbs:443/v4/sc/cx5kl/index-f2-v1-a1.txt", image: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p21512_p_v8_ad.jpg" },
+  { title: "Blade II-2002", video: "https://sskt.carbajalgpsh.sbs/v4/pq/edzan/index-f1-v1-a1.txt", image: "https://alternativemovieposters.com/wp-content/uploads/2022/12/Gerrin-Tramis_Blade2.jpg" },
+  { title: "Blade: Trinity-2004", video: "https://sr81.yevettesh.sbs:443/v4/ho/hrdfj/index-f2-v1-a1.txt", image: "https://horrorreviewsbythecollective.wordpress.com/wp-content/uploads/2019/09/40384305a33e160ba23e618c49b21d5c.jpg?w=1000" },
+  { title: "Underworld-2003", video: "https://spuc.madrigalcajig.sbs:443/v4/6s/81mrs/index-f2-v1-a1.txt", image: "https://i.pinimg.com/564x/b5/ea/0e/b5ea0e879dedafacfd6a305b7a2270ac.jpg" },
+  { title: "Underworld: Evolution-2006", video: "https://sxic.mooringcarmel.sbs:443/v4/us/rmbtm/index-f2-v1-a1.txt", image: "https://i.ebayimg.com/images/g/1sgAAOSwNsxjCXss/s-l400.png" },
+  { title: "Underworld: Rise of the Lycans-2009", video: "https://sskt.yevettesha.sbs:443/v4/hz/nxitp/index-f2-v1-a1.txt", image: "https://m.media-amazon.com/images/M/MV5BMTAwNzYzMDQyMzReQTJeQWpwZ15BbWU3MDMyNDA0MjI@._V1_FMjpg_UX1000_.jpg" },
+  { title: "Underworld: Awakening-2012", video: "https://s9dz.tiltonrigobert.sbs:443/v4/db/jyohk/index-f2-v1-a1.txt", image: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p8761312_p_v10_az.jpg" },
+  { title: "Underworld: Blood Wars-2016", video: "https://sskt.hlmarkscadei.sbs/v4/pq/6ucos/index-f1-v1.txt", image: "https://m.media-amazon.com/images/M/MV5BNzZhNjQxYTUtMjA5Ny00ZWJmLWI5ZjYtYjJmNzU3YmM3NzBhXkEyXkFqcGc@._V1_.jpg" },
+  { title: "Van Helsing-2004", video: "https://scvo.falcoglind.sbs:443/v4/9a/cewpp/index-f2-v1-a1.txt", image: "https://i.pinimg.com/736x/f1/e7/93/f1e793dbebd182b19f5947dbe7724cd9.jpg" },
+  { title: "Dracula Untold-2014", video: "https://s9dz.disalvozunigam.sbs:443/v4/ox/md6rm/index-f2-v1-a1.txt", image: "https://m.media-amazon.com/images/I/91ByR5KoFCL._AC_UF894,1000_QL80_.jpg" },
+  { title: "Moonraker", video: "https://cdn-1.celestialodyssey.site/video-stream/61ec181f/playlist.m3u8", image: "https://image.tmdb.org/t/p/original/uYLS9uMZmP6iXAh0jhWUZI2Nk3e.jpg" },
+  { title: "For Your Eyes Only", video: "https://cdn-1.celestialodyssey.site/video-stream/ebd9fd6c/playlist.m3u8", image: "https://i.pinimg.com/736x/9e/16/41/9e1641d6057cfae2e77879866f54a8a3.jpg" },
+  { title: "Octopussy", video: "https://cdn-1.celestialodyssey.site/video-stream/4dbe366b/playlist.m3u8", image: "https://cdn.posteritati.com/posters/000/000/061/237/octopussy-md-web.jpg" },  
+  { title: "A View to a Kill", video: "https://cdn-1.celestialodyssey.site/video-stream/3b6df79c/playlist.m3u8", image: "https://i.pinimg.com/736x/cb/36/82/cb3682872fc7b9042b505e884f5e5d54.jpg" },
+  { title: "The Living Daylights", video: "https://cdn-1.celestialodyssey.site/video-stream/2748ce73/playlist.m3u8", image: "https://posterspy.com/wp-content/uploads/2023/06/TLD_WEB_TEMPLATE_1000x1500px.jpg" },
+  { title: "Licence to Kill", video: "https://cdn-1.celestialodyssey.site/video-stream/25b11d96/playlist.m3u8", image: "https://i.pinimg.com/736x/d8/45/27/d84527d6f1c4cba168b690a59454bf36.jpg" },
+  { title: "GoldenEye", video: "https://s3ae.killionorellanacoelho.sbs/v4/61/56psf/index-f1-v1-a1.txt", image: "https://i.pinimg.com/736x/96/0e/f3/960ef3339761fc03969d9e37ec60d2d5.jpg" },
+  { title: "Tomorrow Never Dies", video: "https://cdn-1.celestialodyssey.site/video-stream/8e0794fc/playlist.m3u8", image: "https://cdn11.bigcommerce.com/s-yzgoj/images/stencil/1280x1280/products/3234392/6220705/GBEFPO431__06020.1709712291.jpg?c=2" },
+  { title: "The World Is Not Enough", video: "https://cdn-1.celestialodyssey.site/video-stream/60b66510/playlist.m3u8", image: "https://i.pinimg.com/474x/a5/fc/8f/a5fc8fa3feb3ea9f3f6316cb8c01e9b6.jpg" },
+  { title: "Die Another Day", video: "https://cdn-1.celestialodyssey.site/video-stream/431bb15c/playlist.m3u8", image: "https://cdn11.bigcommerce.com/s-yzgoj/images/stencil/500x659/products/2911891/5955577/MOVAJ0534__87882.1679599595.jpg?c=2" },
+  { title: "Casino Royale", video: "https://cdn-1.celestialodyssey.site/video-stream/32000510/playlist.m3u8", image: "https://i.redd.it/6tkj6vkehct81.jpg" },
+  { title: "Quantum of Solace", video: "https://s3ae.alenapark.sbs:443/v4/ox/xqia6/index-f2-v1-a1.txt", image: "https://artofthemovies.co.uk/cdn/shop/files/IMG_4340_300x300.jpg?v=1697040084" },
+  { title: "Skyfall", video: "https://cdn-1.celestialodyssey.site/video-stream/e606a393/playlist.m3u8", image: "https://i.pinimg.com/736x/d2/b2/ff/d2b2ffa2fb20976ae211f1d473128d2c.jpg" },
+  { title: "No Time to Die", video: "https://cdn-1.celestialodyssey.site/video-stream/0be4437c/playlist.m3u8", image: "https://preview.redd.it/4a8rd5658g161.jpg?width=640&crop=smart&auto=webp&s=8c16f3cd4b0a985f791de5507f7d2b1c411eda02" },
+];
+
+const container = document.getElementById('movies');
+movies.forEach((movie, index) => {
+  const div = document.createElement('div');
+  div.className = 'movie';
+  div.innerHTML = `
+    <img src="${movie.image}" alt="${movie.title}">
+    <div class="movie-title">${movie.title}</div>
+  `;
+  div.onclick = () => {
+    const url = `player.html?title=${encodeURIComponent(movie.title)}&video=${encodeURIComponent(movie.video)}&index=${index}`;
+    window.location.href = url;
+  };
+  container.appendChild(div);
+});
+</script>
+
+</body>
+</html>
