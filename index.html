@@ -2,64 +2,230 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vampire</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vampire Cinematic Universe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Explore the ultimate collection of vampire movies">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      background: black;
-      color: #ffcc00;
-      font-family: Arial, sans-serif;
+    :root {
+      --primary: #e63946;
+      --secondary: #f1faee;
+      --dark: #1d3557;
+      --light-dark: #457b9d;
+      --bg: #0a0a0a;
+    }
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: var(--bg);
+      color: var(--secondary);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
       padding: 20px;
+    }
+    
+    header {
       text-align: center;
+      padding: 20px 0;
+      position: relative;
     }
+    
     h1 {
-      margin-bottom: 20px;
-      font-size: 2em;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--primary), #ffcc00);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
     }
-    .movies {
+    
+    .controls {
       display: flex;
       flex-wrap: wrap;
+      gap: 15px;
       justify-content: center;
-      gap: 20px;
+      margin-bottom: 30px;
     }
-    .movie {
-      background: #222;
-      border: 2px solid #ffcc00;
-      border-radius: 12px;
-      width: 200px;
-      padding: 10px;
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    .movie:hover {
-      transform: scale(1.05);
-      background: #333;
-    }
-    .movie img {
+    
+    .search-container {
+      position: relative;
       width: 100%;
-      height: 280px;
-      object-fit: cover;
+      max-width: 600px;
+    }
+    
+    .search-container i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--light-dark);
+    }
+    
+    #searchBar {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
+      font-size: 1rem;
+      border-radius: 30px;
+      border: 2px solid var(--light-dark);
+      background: rgba(29, 53, 87, 0.2);
+      color: var(--secondary);
+      transition: all 0.3s ease;
+    }
+    
+    #searchBar:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
+    }
+    
+    .filter-btn {
+      padding: 10px 20px;
+      background: rgba(29, 53, 87, 0.5);
+      color: var(--secondary);
+      border: 1px solid var(--light-dark);
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .movies {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 25px;
+      padding: 10px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) var(--dark);
+    }
+    
+    .movies::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .movies::-webkit-scrollbar-track {
+      background: var(--dark);
       border-radius: 10px;
     }
-    .movie-title {
-      margin-top: 10px;
-      font-size: 1em;
-      font-weight: bold;
+    
+    .movies::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      border-radius: 10px;
     }
-  
-    @media (max-width: 600px) {
+    
+    .movie {
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    
+    .movie:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(230, 57, 70, 0.4);
+    }
+    
+    .movie::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, rgba(230, 57, 70, 0.7), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .movie:hover::before {
+      opacity: 0.3;
+    }
+    
+    .movie img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .movie-info {
+      padding: 15px;
+    }
+    
+    .movie-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .movie-year {
+      color: var(--light-dark);
+      font-size: 0.9rem;
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
+      z-index: 100;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
       .movies {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
       }
-      .movie {
-        width: 100%;
-        box-sizing: border-box;
-      }
+      
       .movie img {
-        height: auto;
+        height: 250px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .movies {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .movie img {
+        height: 200px;
       }
     }
 
@@ -67,9 +233,25 @@
 </head>
 <body>
 
-<h1>🚨 Vampire Cinematic Universe</h1>
-<input id="searchBar" placeholder="Search Vampire movies..." style="width: calc(100% - 40px);max-width: 100%;margin: 20px auto;padding: 10px 15px;font-size: 1em;border-radius: 8px;border: 2px solid #ffcc00;background: #111;color: #ffcc00;box-shadow: 0 0 10px #ffcc00a0;display: block;" type="text"/>
-<div class="movies" id="movies"></div>
+<div class="container">
+  <header>
+    <h1><i class="fas fa-moon"></i> Vampire Cinematic Universe</h1>
+    <div class="controls">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input id="searchBar" placeholder="Search vampire movies..." type="text"/>
+      </div>
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="blade">Blade</button>
+      <button class="filter-btn" data-filter="underworld">Underworld</button>
+      <button class="filter-btn" data-filter="twilight">Twilight</button>
+    </div>
+  </header>
+  <div class="movies" id="movies"></div>
+</div>
+<div class="theme-toggle">
+  <i class="fas fa-moon"></i>
+</div>
 <script>
 const movies = [
   { title: "Blade-1998", video: "https://sskt.monkberga.sbs:443/v4/sc/cx5kl/index-f2-v1-a1.txt", image: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p21512_p_v8_ad.jpg" },
@@ -90,37 +272,115 @@ const movies = [
   { title: "The Twilight Saga: Breaking Dawn - Part 2-2012", video: "https://ngr2dnwrdasv7gvg.cdn-centaurus.com:443/hls2/01/00808/cirfcx74tb59_o/index-v1-a1.m3u8?t=yynwYbKt2dGsuDQDTkQRJ22P9GhurIs9DMBxt2-4nMg&s=1747835188&e=129600&f=4044136&srv=rcw6bat4y3dx8&i=0.4&sp=500&p1=rcw6bat4y3dx8&p2=rcw6bat4y3dx8&asn=24554", image: "https://cdn11.bigcommerce.com/s-twbzkv97cv/images/stencil/1280x1280/products/3941/6426/600x600bb__91248.1578039533.jpg?c=2" },
 ];
 
+// Enhanced movie data with years and categories
+const movies = [
+  { title: "Blade (1998)", year: "1998", category: "blade", video: "https://sskt.monkberga.sbs:443/v4/sc/cx5kl/index-f2-v1-a1.txt", image: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p21512_p_v8_ad.jpg" },
+  { title: "Blade II (2002)", year: "2002", category: "blade", video: "https://sskt.carbajalgpsh.sbs/v4/pq/edzan/index-f1-v1-a1.txt", image: "https://m.media-amazon.com/images/M/MV5BZDZlNzQ5MmUtNTdlYS00YWFhLTk2NzItOGY5OTYzM2I2NzY3XkEyXkFqcGc@._V1_.jpg" },
+  { title: "Blade: Trinity (2004)", year: "2004", category: "blade", video: "https://sr81.yevettesh.sbs:443/v4/ho/hrdfj/index-f2-v1-a1.txt", image: "https://horrorreviewsbythecollective.wordpress.com/wp-content/uploads/2019/09/40384305a33e160ba23e618c49b21d5c.jpg?w=1000" },
+  { title: "Underworld (2003)", year: "2003", category: "underworld", video: "https://spuc.madrigalcajig.sbs:443/v4/6s/81mrs/index-f2-v1-a1.txt", image: "https://i.pinimg.com/564x/b5/ea/0e/b5ea0e879dedafacfd6a305b7a2270ac.jpg" },
+  { title: "Underworld: Evolution (2006)", year: "2006", category: "underworld", video: "https://sxic.mooringcarmel.sbs:443/v4/us/rmbtm/index-f2-v1-a1.txt", image: "https://i.ebayimg.com/images/g/1sgAAOSwNsxjCXss/s-l400.png" },
+  { title: "Underworld: Rise of the Lycans (2009)", year: "2009", category: "underworld", video: "https://sskt.yevettesha.sbs:443/v4/hz/nxitp/index-f2-v1-a1.txt", image: "https://m.media-amazon.com/images/M/MV5BMTAwNzYzMDQyMzReQTJeQWpwZ15BbWU3MDMyNDA0MjI@._V1_FMjpg_UX1000_.jpg" },
+  { title: "Underworld: Awakening (2012)", year: "2012", category: "underworld", video: "https://s9dz.tiltonrigobert.sbs:443/v4/db/jyohk/index-f2-v1-a1.txt", image: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p8761312_p_v10_az.jpg" },
+  { title: "Underworld: Blood Wars (2016)", year: "2016", category: "underworld", video: "https://sj3l.hlmarkscadei.sbs/v4/pq/6ucos/cf-master.txt?v=1730988851", image: "https://m.media-amazon.com/images/M/MV5BNzZhNjQxYTUtMjA5Ny00ZWJmLWI5ZjYtYJmNzU3YmM3NzBhXkEyXkFqcGc@._V1_.jpg" },
+  { title: "Van Helsing (2004)", year: "2004", category: "classic", video: "https://scvo.falcoglind.sbs:443/v4/9a/cewpp/index-f2-v1-a1.txt", image: "https://i.pinimg.com/736x/f1/e7/93/f1e793dbebd182b19f5947dbe7724cd9.jpg" },
+  { title: "Dracula Untold (2014)", year: "2014", category: "classic", video: "https://s9dz.disalvozunigam.sbs:443/v4/ox/md6rm/index-f2-v1-a1.txt", image: "https://m.media-amazon.com/images/I/91ByR5KoFCL._AC_UF894,1000_QL80_.jpg" },
+  { title: "Interview With The Vampire (1994)", year: "1994", category: "classic", video: "https://s3ae.gomesscheerer.sbs:443/v4/lf/6rzsq/index-f2-v1-a1.txt", image: "https://image.tmdb.org/t/p/original/tOzcnk4L5oD3naIF6RTLZJimOwY.jpg" },
+  { title: "Twilight (2008)", year: "2008", category: "twilight", video: "https://sxic.haddixslone.sbs:443/v4/hz/svtlt/index-f2-v1-a1.txt", image: "https://raisingchildren.net.au/__data/assets/image/0023/57452/twilight.jpg" },
+  { title: "The Twilight Saga: New Moon (2009)", year: "2009", category: "twilight", video: "https://skra.cwsspottstcyl.sbs:443/v4/qu/htrl3/index-f2-v1-a1.txt", image: "https://m.media-amazon.com/images/I/51inMXOB9dL._AC_UF894,1000_QL80_.jpg" },  
+  { title: "The Twilight Saga: Eclipse (2010)", year: "2010", category: "twilight", video: "https://cdn-1.celestialodyssey.site/video-stream/3b6df79c/playlist.m3u8", image: "https://cdn.movieguide.org/wp-content/uploads/2012/08/The-Twilight-Saga-Eclipse_1024x1024.jpg" },
+  { title: "The Twilight Saga: Breaking Dawn - Part 1 (2011)", year: "2011", category: "twilight", video: "https://sr81.ppolakohyfw.sbs/v4/lf/qxnml/cf-master.txt?v=1733761974", image: "https://upload.wikimedia.org/wikipedia/en/c/c2/Breaking_Dawn_Part_1_Poster.jpg" },
+  { title: "The Twilight Saga: Breaking Dawn - Part 2 (2012)", year: "2012", category: "twilight", video: "https://ngr2dnwrdasv7gvg.cdn-centaurus.com:443/hls2/01/00808/cirfcx74tb59_o/index-v1-a1.m3u8?t=yynwYbKt2dGsuDQDTkQRJ22P9GhurIs9DMBxt2-4nMg&s=1747835188&e=129600&f=4044136&srv=rcw6bat4y3dx8&i=0.4&sp=500&p1=rcw6bat4y3dx8&p2=rcw6bat4y3dx8&asn=24554", image: "https://cdn11.bigcommerce.com/s-twbzkv97cv/images/stencil/1280x1280/products/3941/6426/600x600bb__91248.1578039533.jpg?c=2" },
+];
+
 const container = document.getElementById('movies');
-movies.forEach((movie, index) => {
-  const div = document.createElement('div');
-  div.className = 'movie';
-  div.innerHTML = `
-    <img src="${movie.image}" alt="${movie.title}">
-    <div class="movie-title">${movie.title}</div>
-  `;
-  div.onclick = () => {
-    const url = `player.html?title=${encodeURIComponent(movie.title)}&video=${encodeURIComponent(movie.video)}&index=${index}`;
-    window.location.href = url;
-  };
-  container.appendChild(div);
-});
-// Live Search Filter
+let activeFilter = 'all';
 
-document.getElementById('searchBar').addEventListener('input', function () {
-
-  const searchTerm = this.value.toLowerCase();
-
-  const movieDivs = document.querySelectorAll('.movie');
-
-  movieDivs.forEach(div => {
-
-    const title = div.querySelector('.movie-title').textContent.toLowerCase();
-
-    div.style.display = title.includes(searchTerm) ? 'block' : 'none';
-
+function renderMovies(filter = 'all', searchTerm = '') {
+  container.innerHTML = '';
+  
+  const filteredMovies = movies.filter(movie => {
+    const matchesFilter = filter === 'all' || movie.category === filter;
+    const matchesSearch = movie.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
   });
 
-});    
+  if (filteredMovies.length === 0) {
+    container.innerHTML = '<div class="no-results">No movies found matching your criteria</div>';
+    return;
+  }
+
+  filteredMovies.forEach((movie, index) => {
+    const div = document.createElement('div');
+    div.className = 'movie';
+    div.setAttribute('data-category', movie.category);
+    div.innerHTML = `
+      <img src="${movie.image}" alt="${movie.title}" loading="lazy">
+      <div class="movie-info">
+        <div class="movie-title">${movie.title}</div>
+        <div class="movie-year">${movie.year}</div>
+      </div>
+    `;
+    div.onclick = () => {
+      const url = `player.html?title=${encodeURIComponent(movie.title)}&video=${encodeURIComponent(movie.video)}&index=${index}`;
+      window.location.href = url;
+    };
+    container.appendChild(div);
+  });
+}
+
+// Initialize
+renderMovies();
+
+// Search functionality
+document.getElementById('searchBar').addEventListener('input', function() {
+  renderMovies(activeFilter, this.value);
+});
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    activeFilter = this.dataset.filter;
+    renderMovies(activeFilter, document.getElementById('searchBar').value);
+  });
+});
+
+// Theme toggle
+const themeToggle = document.querySelector('.theme-toggle');
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('light-theme');
+  const icon = themeToggle.querySelector('i');
+  if (document.body.classList.contains('light-theme')) {
+    icon.classList.replace('fa-moon', 'fa-sun');
+  } else {
+    icon.classList.replace('fa-sun', 'fa-moon');
+  }
+});
+
+// Add light theme styles
+const style = document.createElement('style');
+style.textContent = `
+  .light-theme {
+    --primary: #e63946;
+    --secondary: #1d3557;
+    --dark: #a8dadc;
+    --light-dark: #457b9d;
+    --bg: #f1faee;
+  }
+  .light-theme .movie {
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  .light-theme .movie:hover {
+    box-shadow: 0 15px 30px rgba(230, 57, 70, 0.2);
+  }
+  .light-theme #searchBar {
+    background: rgba(168, 218, 220, 0.2);
+    color: #1d3557;
+  }
+`;
+document.head.appendChild(style);
 </script>
 
 </body>
