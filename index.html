@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Montserrat:wght@300;400;600;700&display=swap');
-    
     :root {
       --primary: #e50914;
       --secondary: #b81d24;
@@ -16,205 +15,29 @@
       --light: #f5f5f1;
       --accent: #ffcc00;
     }
-    
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: var(--dark);
-      color: var(--light);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    
-    .title-font {
-      font-family: 'Cinzel Decorative', cursive;
-    }
-    
-    .movie-card {
-      transition: all 0.3s ease;
-      transform-origin: center;
-      perspective: 1000px;
-    }
-    
-    .movie-card:hover {
-      transform: translateY(-10px) scale(1.03);
-      box-shadow: 0 10px 25px rgba(229, 9, 20, 0.3);
-    }
-    
-    .movie-card:hover .movie-poster {
-      transform: rotateY(5deg);
-    }
-    
-    .movie-poster {
-      transition: transform 0.5s ease;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    }
-    
-    .movie-poster::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 50%;
-      background: linear-gradient(to top, rgba(20, 20, 20, 0.9), transparent);
-    }
-    
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar {
-      height: 6px;
-      width: 6px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 10px;
-    }
-    
-    .filter-btn.active {
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .search-input:focus {
-      box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
-    }
-    
-    .dark-mode {
-      background-color: #0a0a0a;
-      color: #e5e5e5;
-    }
-    
-    .dark-mode .navbar {
-      background-color: #111;
-    }
-    
-    .dark-mode .movie-card {
-      background-color: #222;
-    }
-    
-    .blood-drop {
-      position: absolute;
-      width: 20px;
-      height: 30px;
-      background: var(--primary);
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      transform: rotate(-45deg);
-      opacity: 0.7;
-      animation: drip 4s infinite;
-    }
-    
-    @keyframes drip {
-      0% { transform: translateY(0) rotate(-45deg); opacity: 0.7; }
-      50% { transform: translateY(20px) rotate(-45deg); opacity: 0.4; }
-      100% { transform: translateY(40px) rotate(-45deg); opacity: 0; }
-    }
-    
-    .vampire-bg {
-      background: linear-gradient(135deg, rgba(20, 20, 20, 0.9) 0%, rgba(184, 29, 36, 0.7) 100%);
-    }
-    
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(229, 9, 20, 0.3);
-      border-radius: 50%;
-      border-top-color: var(--primary);
-      animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .tooltip {
-      position: relative;
-    }
-    
-    .tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
-    
-    .tooltip-text {
-      visibility: hidden;
-      width: 120px;
-      background-color: var(--dark);
-      color: var(--light);
-      text-align: center;
-      border-radius: 6px;
-      padding: 5px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      margin-left: -60px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      font-size: 12px;
-      border: 1px solid var(--primary);
-    }
-    
-    .tooltip-text::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: var(--primary) transparent transparent transparent;
-    }
-    
-    @media (max-width: 768px) {
-      .movie-card {
-        width: 150px;
-      }
-      
-      .movie-poster {
-        height: 200px;
-      }
-      
-      .title-text {
-        font-size: 1.5rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .movie-card {
-        width: 130px;
-      }
-      
-      .movie-poster {
-        height: 180px;
-      }
-      
-      .filter-btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-      }
-    }
+    body {font-family:'Montserrat',sans-serif;background-color:var(--dark);color:var(--light);min-height:100vh;overflow-x:hidden;}
+    .title-font{font-family:'Cinzel Decorative',cursive;}
+    .movie-card{transition:all .3s ease;transform-origin:center;perspective:1000px;}
+    .movie-card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 10px 25px rgba(229,9,20,.3);}
+    .movie-card:hover .movie-poster{transform:rotateY(5deg);}
+    .movie-poster{transition:transform .5s ease;box-shadow:0 5px 15px rgba(0,0,0,.5);}
+    .movie-poster::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(to top,rgba(20,20,20,.9),transparent);}
+    .filter-btn.active{background-color:var(--primary);color:white;}
+    .dark-mode{background-color:#0a0a0a;color:#e5e5e5;}
+    .dark-mode .navbar{background-color:#111;}
+    .dark-mode .movie-card{background-color:#222;}
+    .loading-spinner{width:50px;height:50px;border:5px solid rgba(229,9,20,.3);border-radius:50%;border-top-color:var(--primary);animation:spin 1s ease-in-out infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
   </style>
 </head>
 <body class="relative">
-  <!-- Blood drop animations -->
+  
+   <!-- Blood drop animations -->
   <div class="blood-drop" style="left: 10%; top: 10%; animation-delay: 0.5s;"></div>
   <div class="blood-drop" style="left: 30%; top: 15%; animation-delay: 1s;"></div>
   <div class="blood-drop" style="left: 70%; top: 5%; animation-delay: 1.5s;"></div>
   <div class="blood-drop" style="left: 85%; top: 12%; animation-delay: 2s;"></div>
-  
+
   <!-- Navbar -->
   <nav class="navbar bg-black bg-opacity-90 text-white sticky top-0 z-50 shadow-lg">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -225,21 +48,16 @@
         </h1>
       </div>
       <div class="flex items-center space-x-4">
-        <button id="darkModeToggle" class="tooltip p-2 rounded-full hover:bg-gray-800 transition">
+        <button id="darkModeToggle" class="p-2 rounded-full hover:bg-gray-800 transition">
           <i class="fas fa-moon text-yellow-400"></i>
-          <span class="tooltip-text">Dark Mode</span>
-        </button>
-        <button id="sortToggle" class="tooltip p-2 rounded-full hover:bg-gray-800 transition">
-          <i class="fas fa-sort-amount-down text-yellow-400"></i>
-          <span class="tooltip-text">Sort By</span>
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <main class="container mx-auto px-4 py-8">
-    <!-- Search and Filters -->
+    <!-- Search -->
     <div class="mb-8">
       <div class="relative mb-6">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -247,89 +65,49 @@
         </div>
         <input id="searchBar" type="text" class="w-full bg-gray-900 text-white border border-gray-700 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition" placeholder="Search vampire movies...">
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-          <button id="clearSearch" class="text-gray-400 hover:text-white">
-            <i class="fas fa-times"></i>
-          </button>
+          <button id="clearSearch" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
         </div>
       </div>
-      
-      <div class="flex flex-wrap gap-2 mb-4 overflow-x-auto pb-2 custom-scrollbar">
-        <button class="filter-btn active px-4 py-2 rounded-full bg-red-600 text-white text-sm font-medium transition" data-filter="all">
-          All Movies
-        </button>
-        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition" data-filter="blade">
-          Blade Series
-        </button>
-        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition" data-filter="underworld">
-          Underworld Series
-        </button>
-        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition" data-filter="twilight">
-          Twilight Saga
-        </button>
-        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition" data-filter="classic">
-          Classic Vampires
-        </button>
+      <div class="flex flex-wrap gap-2 mb-4 overflow-x-auto pb-2">
+        <button class="filter-btn active px-4 py-2 rounded-full bg-red-600 text-white text-sm font-medium" data-filter="all">All</button>
+        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700" data-filter="blade">Blade Series</button>
+        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700" data-filter="underworld">Underworld</button>
+        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700" data-filter="twilight">Twilight</button>
+        <button class="filter-btn px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700" data-filter="classic">Classics</button>
       </div>
     </div>
-    
-    <!-- Sort Dropdown (hidden by default) -->
-    <div id="sortDropdown" class="hidden mb-6 bg-gray-800 rounded-lg p-4 shadow-lg">
-      <h3 class="text-lg font-semibold mb-3 text-gray-300">Sort By</h3>
-      <div class="grid grid-cols-2 gap-3">
-        <button class="sort-option px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition" data-sort="title-asc">
-          <i class="fas fa-sort-alpha-down mr-2"></i> Title (A-Z)
-        </button>
-        <button class="sort-option px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition" data-sort="title-desc">
-          <i class="fas fa-sort-alpha-down-alt mr-2"></i> Title (Z-A)
-        </button>
-        <button class="sort-option px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition" data-sort="year-asc">
-          <i class="fas fa-sort-numeric-down mr-2"></i> Year (Oldest)
-        </button>
-        <button class="sort-option px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition" data-sort="year-desc">
-          <i class="fas fa-sort-numeric-down-alt mr-2"></i> Year (Newest)
-        </button>
-      </div>
-    </div>
-    
-    <!-- Movies Grid -->
-    <div id="loading" class="flex justify-center items-center py-20">
-      <div class="loading-spinner"></div>
-    </div>
-    
-    <div id="movies" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 hidden">
-      <!-- Movie cards will be inserted here by JavaScript -->
-    </div>
-    
+
+    <!-- Movies -->
+    <div id="loading" class="flex justify-center items-center py-20"><div class="loading-spinner"></div></div>
+    <div id="movies" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 hidden"></div>
     <div id="noResults" class="hidden text-center py-20">
       <i class="fas fa-video-slash text-5xl text-gray-600 mb-4"></i>
       <h3 class="text-2xl font-semibold text-gray-400">No movies found</h3>
       <p class="text-gray-500 mt-2">Try adjusting your search or filters</p>
     </div>
   </main>
-  
-  <!-- Footer -->
-  <footer class="bg-black bg-opacity-90 text-gray-400 py-6">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-4 md:mb-0">
-          <h2 class="title-font text-xl font-bold mb-2">Vampire Cinematic Universe</h2>
-          <p class="text-sm">The ultimate collection of vampire movies</p>
+
+  <!-- Modal Player -->
+  <div id="playback-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-90">
+    <div class="relative w-full max-w-4xl bg-gray-900 rounded-xl overflow-hidden p-4">
+      <button id="close-modal" class="absolute top-3 right-3 text-white hover:text-red-500 text-2xl transition"><i class="fas fa-times"></i></button>
+      <div class="aspect-video"><video id="modal-video" class="w-full h-full bg-black" controls playsinline></video></div>
+      <div id="qualityControls" class="flex justify-center mt-3"></div>
+      <div id="playerError" class="hidden bg-red-900 text-white p-2 rounded mt-2 text-center"></div>
+      <div class="flex justify-between mt-3">
+        <button id="prevBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700"><i class="fas fa-step-backward mr-1"></i>Prev</button>
+        <div class="flex gap-2">
+          <button id="fullscreenBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700"><i class="fas fa-expand mr-1"></i>Full</button>
+          <button id="muteBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700"><i class="fas fa-volume-up mr-1"></i>Mute</button>
         </div>
-        <div class="flex space-x-4">
-          <a href="#" class="hover:text-red-600 transition"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="hover:text-red-600 transition"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="hover:text-red-600 transition"><i class="fab fa-instagram"></i></a>
-        </div>
+        <button id="nextBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700">Next<i class="fas fa-step-forward ml-1"></i></button>
       </div>
-      <div class="mt-6 text-center text-xs">
-        <p>© 2023 Vampire Cinematic Universe. All rights reserved.</p>
-      </div>
+      <h3 id="modal-title" class="text-xl font-bold text-red-400 mt-3"></h3>
     </div>
-  </footer>
+  </div>
 
   <script>
-    // Movie data with additional information
-    const movies = [
+    const movies=[
       { 
         title: "Blade", 
         year: 1998,
@@ -475,172 +253,131 @@
         description: "After Bella's transformation, the Cullens gather allies to face the Volturi's false accusations."
       }
     ];
+    const moviesContainer=document.getElementById('movies');
+    const loading=document.getElementById('loading');
+    const noResults=document.getElementById('noResults');
+    const searchBar=document.getElementById('searchBar');
+    const clearSearch=document.getElementById('clearSearch');
+    const filterButtons=document.querySelectorAll('.filter-btn');
+    const darkToggle=document.getElementById('darkModeToggle');
 
-    // DOM elements
-    const moviesContainer = document.getElementById('movies');
-    const searchBar = document.getElementById('searchBar');
-    const clearSearch = document.getElementById('clearSearch');
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const sortOptions = document.querySelectorAll('.sort-option');
-    const loadingElement = document.getElementById('loading');
-    const noResultsElement = document.getElementById('noResults');
-    const sortToggle = document.getElementById('sortToggle');
-    const sortDropdown = document.getElementById('sortDropdown');
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    
-    // Current filter and sort state
-    let currentFilter = 'all';
-    let currentSort = 'title-asc';
-    let darkMode = false;
-    
-    // Initialize the page
-    document.addEventListener('DOMContentLoaded', () => {
-      // Simulate loading
-      setTimeout(() => {
-        loadingElement.classList.add('hidden');
-        moviesContainer.classList.remove('hidden');
-        renderMovies();
-      }, 800);
-      
-      // Check for saved dark mode preference
-      if (localStorage.getItem('darkMode') === 'true') {
-        toggleDarkMode();
-      }
+    const playbackModal=document.getElementById('playback-modal');
+    const closeModalBtn=document.getElementById('close-modal');
+    const modalVideo=document.getElementById('modal-video');
+    const modalTitle=document.getElementById('modal-title');
+    const qualityControls=document.getElementById('qualityControls');
+    const playerError=document.getElementById('playerError');
+    const prevBtn=document.getElementById('prevBtn');
+    const nextBtn=document.getElementById('nextBtn');
+    const fullscreenBtn=document.getElementById('fullscreenBtn');
+    const muteBtn=document.getElementById('muteBtn');
+
+    let currentFilter='all',currentList=[],currentVideo=null;
+
+    function isStream(u){return /\.(m3u8|txt)$/i.test(u);}
+    function isMP4(u){return /\.mp4(\?|$)/i.test(u);}
+    function showError(msg){playerError.textContent=msg;playerError.classList.remove('hidden');setTimeout(()=>playerError.classList.add('hidden'),3000);}
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      setTimeout(()=>{loading.classList.add('hidden');moviesContainer.classList.remove('hidden');renderMovies();},800);
+      if(localStorage.getItem('darkMode')==='true')toggleDark();
     });
-    
-    // Render movies based on current filter and sort
-    function renderMovies() {
-      let filteredMovies = [...movies];
-      
-      // Apply filter
-      if (currentFilter !== 'all') {
-        filteredMovies = filteredMovies.filter(movie => movie.series === currentFilter);
-      }
-      
-      // Apply search
-      const searchTerm = searchBar.value.toLowerCase();
-      if (searchTerm) {
-        filteredMovies = filteredMovies.filter(movie => 
-          movie.title.toLowerCase().includes(searchTerm) || 
-          movie.description.toLowerCase().includes(searchTerm)
-        );
-      }
-      
-      // Apply sort
-      switch (currentSort) {
-        case 'title-asc':
-          filteredMovies.sort((a, b) => a.title.localeCompare(b.title));
-          break;
-        case 'title-desc':
-          filteredMovies.sort((a, b) => b.title.localeCompare(a.title));
-          break;
-        case 'year-asc':
-          filteredMovies.sort((a, b) => a.year - b.year);
-          break;
-        case 'year-desc':
-          filteredMovies.sort((a, b) => b.year - a.year);
-          break;
-      }
-      
-      // Clear current movies
-      moviesContainer.innerHTML = '';
-      
-      // Display no results message if empty
-      if (filteredMovies.length === 0) {
-        noResultsElement.classList.remove('hidden');
-        moviesContainer.classList.add('hidden');
-        return;
-      } else {
-        noResultsElement.classList.add('hidden');
-        moviesContainer.classList.remove('hidden');
-      }
-      
-      // Create movie cards
-      filteredMovies.forEach(movie => {
-        const movieCard = document.createElement('div');
-        movieCard.className = 'movie-card bg-gray-900 rounded-lg overflow-hidden shadow-lg relative group';
-        movieCard.innerHTML = `
+
+    function renderMovies(){
+      let list=[...movies];
+      if(currentFilter!=='all')list=list.filter(m=>m.series===currentFilter);
+      const term=searchBar.value.toLowerCase();
+      if(term)list=list.filter(m=>m.title.toLowerCase().includes(term)||m.description.toLowerCase().includes(term));
+      moviesContainer.innerHTML='';
+      if(!list.length){noResults.classList.remove('hidden');moviesContainer.classList.add('hidden');return;}
+      noResults.classList.add('hidden');moviesContainer.classList.remove('hidden');
+      currentList=list;
+      list.forEach((m,i)=>{
+        const card=document.createElement('div');
+        card.className='movie-card bg-gray-900 rounded-lg overflow-hidden shadow-lg relative group';
+        card.innerHTML=`
           <div class="movie-poster relative overflow-hidden">
-            <img src="${movie.image}" alt="${movie.title}" class="w-full h-64 object-cover transition duration-500 group-hover:opacity-80">
+            <img src="${m.image}" class="w-full h-64 object-cover transition duration-500 group-hover:opacity-80">
             <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent">
-              <div class="flex items-center">
-                <span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">${movie.rating}/10</span>
-                <span class="text-white text-xs">${movie.year}</span>
-              </div>
-              <h3 class="text-white font-semibold truncate">${movie.title}</h3>
+              <div class="flex items-center"><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">${m.rating}/10</span><span class="text-white text-xs">${m.year}</span></div>
+              <h3 class="text-white font-semibold truncate">${m.title}</h3>
             </div>
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition duration-300 flex items-center justify-center">
-              <button class="play-button opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition duration-300 bg-red-600 hover:bg-red-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
-                <i class="fas fa-play"></i>
-              </button>
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center">
+              <button class="opacity-0 group-hover:opacity-100 bg-red-600 hover:bg-red-700 text-white rounded-full w-12 h-12 flex items-center justify-center"><i class="fas fa-play"></i></button>
             </div>
           </div>
-          <div class="p-3">
-            <p class="text-gray-400 text-xs line-clamp-2">${movie.description}</p>
-          </div>
-        `;
-        
-        movieCard.addEventListener('click', () => {
-          const url = `player.html?title=${encodeURIComponent(movie.title)}&video=${encodeURIComponent(movie.video)}`;
-          window.location.href = url;
-        });
-        
-        moviesContainer.appendChild(movieCard);
+          <div class="p-3"><p class="text-gray-400 text-xs line-clamp-2">${m.description}</p></div>`;
+        card.addEventListener('click',()=>openPlaybackFor(list,i));
+        moviesContainer.appendChild(card);
       });
     }
-    
-    // Event listeners
-    searchBar.addEventListener('input', () => {
-      renderMovies();
-    });
-    
-    clearSearch.addEventListener('click', () => {
-      searchBar.value = '';
-      renderMovies();
-    });
-    
-    filterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        currentFilter = button.dataset.filter;
-        renderMovies();
-      });
-    });
-    
-    sortOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        currentSort = option.dataset.sort;
-        renderMovies();
-        sortDropdown.classList.add('hidden');
-      });
-    });
-    
-    sortToggle.addEventListener('click', () => {
-      sortDropdown.classList.toggle('hidden');
-    });
-    
-    darkModeToggle.addEventListener('click', () => {
-      toggleDarkMode();
-    });
-    
-    function toggleDarkMode() {
-      darkMode = !darkMode;
-      document.body.classList.toggle('dark-mode');
-      darkModeToggle.innerHTML = darkMode 
-        ? '<i class="fas fa-sun text-yellow-400"></i><span class="tooltip-text">Light Mode</span>'
-        : '<i class="fas fa-moon text-yellow-400"></i><span class="tooltip-text">Dark Mode</span>';
-      
-      // Save preference to localStorage
-      localStorage.setItem('darkMode', darkMode);
-    }
-    
-    // Close sort dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!sortToggle.contains(e.target) && !sortDropdown.contains(e.target)) {
-        sortDropdown.classList.add('hidden');
+
+    function openPlaybackFor(list,i){
+      const item=list[i]; if(!item)return;
+      const v=item.video;
+      let combined=''; if(typeof v==='object')combined=Object.values(v).join(' ');
+      if((typeof v==='string'&&isStream(v)&&!isMP4(v))||(typeof v==='object'&&isStream(combined)&&!isMP4(combined))){
+        const enc=encodeURIComponent(typeof v==='object'?combined:v);
+        window.location.href=`player.html?title=${encodeURIComponent(item.title)}&video=${enc}`;return;
       }
+      playInModal(list,i);
+    }
+
+    function playInModal(list,i){
+      const item=list[i];
+      modalTitle.textContent=item.title;
+      qualityControls.innerHTML='';
+      let src='';
+      if(typeof item.video==='object'){
+        for(const[k,u]of Object.entries(item.video)){
+          const b=document.createElement('button');
+          b.className='px-3 py-1 mx-1 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded';
+          b.textContent=k.toUpperCase();b.dataset.url=u;
+          qualityControls.appendChild(b);
+        }
+        src=item.video.high||item.video.medium||item.video.low||Object.values(item.video)[0];
+      }else src=item.video;
+      modalVideo.pause();modalVideo.src=src;
+      playbackModal.classList.remove('hidden');document.body.style.overflow='hidden';
+      currentVideo={list,index:i};
+      modalVideo.play().catch(()=>showError('Press play to start.'));
+      updateNavButtons();
+    }
+
+    function updateNavButtons(){prevBtn.disabled=currentVideo.index<=0;nextBtn.disabled=currentVideo.index>=currentVideo.list.length-1;}
+    function closeModal(){modalVideo.pause();modalVideo.src='';playbackModal.classList.add('hidden');document.body.style.overflow='';currentVideo=null;}
+    function toggleMute(){modalVideo.muted=!modalVideo.muted;muteBtn.innerHTML=modalVideo.muted?'<i class="fas fa-volume-mute mr-1"></i>Unmute':'<i class="fas fa-volume-up mr-1"></i>Mute';}
+    function fullscreen(){!document.fullscreenElement?modalVideo.requestFullscreen():document.exitFullscreen();}
+    function playNext(){if(currentVideo.index<currentVideo.list.length-1)playInModal(currentVideo.list,currentVideo.index+1);}
+    function playPrev(){if(currentVideo.index>0)playInModal(currentVideo.list,currentVideo.index-1);}
+
+    // events
+    closeModalBtn.onclick=closeModal;
+    prevBtn.onclick=playPrev;
+    nextBtn.onclick=playNext;
+    fullscreenBtn.onclick=fullscreen;
+    muteBtn.onclick=toggleMute;
+    playbackModal.addEventListener('click',e=>{if(e.target===playbackModal)closeModal();});
+    qualityControls.addEventListener('click',e=>{const u=e.target.dataset.url;if(u){const t=modalVideo.currentTime;modalVideo.src=u;modalVideo.currentTime=t;modalVideo.play();}});
+    document.addEventListener('keydown',e=>{
+      if(playbackModal.classList.contains('hidden'))return;
+      const k=e.key.toLowerCase();
+      if(k==='escape')closeModal();
+      if(k===' ') {e.preventDefault();modalVideo.paused?modalVideo.play():modalVideo.pause();}
+      if(k==='arrowright')modalVideo.currentTime+=10;
+      if(k==='arrowleft')modalVideo.currentTime-=10;
+      if(k==='n')playNext();
+      if(k==='p')playPrev();
+      if(k==='m')toggleMute();
+      if(k==='f')fullscreen();
     });
+
+    // search/filter
+    searchBar.oninput=renderMovies;
+    clearSearch.onclick=()=>{searchBar.value='';renderMovies();};
+    filterButtons.forEach(b=>b.onclick=()=>{filterButtons.forEach(x=>x.classList.remove('active','bg-red-600','text-white'));b.classList.add('active','bg-red-600','text-white');currentFilter=b.dataset.filter;renderMovies();});
+    darkToggle.onclick=toggleDark;
+    function toggleDark(){document.body.classList.toggle('dark-mode');localStorage.setItem('darkMode',document.body.classList.contains('dark-mode'));}
   </script>
 </body>
 </html>
