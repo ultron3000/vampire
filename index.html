@@ -1,3 +1,7 @@
+<!-- vampire-updated.html -->
+<!-- Caption: Vampire Cinematic Universe — Hawkeye modal/player behavior integrated (HLS/MP4/YouTube/iframe). -->
+<!-- Hashtags: #Vampire #ModalPlayer #HLS #Streaming #TukaramIntegration -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +10,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- hls.js for HLS playback -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.1/dist/hls.min.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Montserrat:wght@300;400;600;700&display=swap');
     :root {
@@ -28,6 +35,18 @@
     .dark-mode .movie-card{background-color:#222;}
     .loading-spinner{width:50px;height:50px;border:5px solid rgba(229,9,20,.3);border-radius:50%;border-top-color:var(--primary);animation:spin 1s ease-in-out infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
+    /* Hawkeye-style modal tweaks */
+    .modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); z-index: 9999; opacity:0; visibility:hidden; transition: all 0.25s ease; }
+    .modal-overlay.active { opacity:1; visibility:visible; }
+    .modal-card { width: 95%; max-width: 980px; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg,#0b0b0b,#151515); box-shadow: 0 30px 80px rgba(0,0,0,0.7); }
+    .player-area { position: relative; padding-bottom: 56.25%; height: 0; background: black; }
+    .player-area video, .player-area iframe { position: absolute; inset: 0; width: 100%; height: 100%; background: black; }
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.06); position: relative; width: 100%; }
+    .progress-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: var(--accent); transition: width .2s linear; }
+    .controls { display:flex; gap:8px; align-items:center; }
+    .btn { background: #1f1f1f; color: #fff; padding:8px 12px; border-radius:8px; }
+    .btn.primary { background: var(--primary); color: #fff; }
+    @media (max-width:640px){ .modal-card { width: 98%; } }
   </style>
 </head>
 <body class="relative">
@@ -87,22 +106,40 @@
     </div>
   </main>
 
-  <!-- Modal Player -->
-  <div id="playback-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-90">
-    <div class="relative w-full max-w-4xl bg-gray-900 rounded-xl overflow-hidden p-4">
-      <button id="close-modal" class="absolute top-3 right-3 text-white hover:text-red-500 text-2xl transition"><i class="fas fa-times"></i></button>
-      <div class="aspect-video"><video id="modal-video" class="w-full h-full bg-black" controls playsinline></video></div>
-      <div id="qualityControls" class="flex justify-center mt-3"></div>
-      <div id="playerError" class="hidden bg-red-900 text-white p-2 rounded mt-2 text-center"></div>
-      <div class="flex justify-between mt-3">
-        <button id="prevBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700"><i class="fas fa-step-backward mr-1"></i>Prev</button>
-        <div class="flex gap-2">
-          <button id="fullscreenBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700"><i class="fas fa-expand mr-1"></i>Full</button>
-          <button id="muteBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700"><i class="fas fa-volume-up mr-1"></i>Mute</button>
+  <!-- Modal Player (Hawkeye-style behavior integrated) -->
+  <div id="playback-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card">
+      <div class="relative p-4 border-b border-gray-800 flex items-start justify-between">
+        <div>
+          <div id="modal-title" class="text-xl font-bold text-red-400"></div>
+          <div id="modal-sub" class="text-sm text-gray-400 mt-1"></div>
         </div>
-        <button id="nextBtn" class="px-3 py-1 bg-gray-800 text-red-400 rounded hover:bg-gray-700">Next<i class="fas fa-step-forward ml-1"></i></button>
+        <div class="flex items-center gap-3">
+          <button id="close-modal" class="text-white p-2 rounded bg-gray-800 hover:bg-gray-700"><i class="fas fa-times"></i></button>
+        </div>
       </div>
-      <h3 id="modal-title" class="text-xl font-bold text-red-400 mt-3"></h3>
+
+      <div id="player-area" class="player-area">
+        <!-- Default <video> element (will be replaced/used by JS) -->
+        <video id="modal-video" controls playsinline preload="metadata"></video>
+      </div>
+
+      <div class="progress-bar" id="progress-bar">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+
+      <div class="p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <p id="modal-desc" class="text-gray-300 text-sm"></p>
+        </div>
+        <div class="controls">
+          <button id="prevBtn" class="btn" title="Previous"><i class="fas fa-step-backward"></i></button>
+          <button id="modal-play" class="btn primary" title="Play/Pause"><i class="fas fa-play mr-2"></i><span id="playText">Play</span></button>
+          <button id="nextBtn" class="btn" title="Next"><i class="fas fa-step-forward"></i></button>
+          <button id="muteBtn" class="btn" title="Mute"><i class="fas fa-volume-up"></i></button>
+          <button id="fullscreenBtn" class="btn" title="Fullscreen"><i class="fas fa-expand"></i></button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -262,131 +299,339 @@
         description: "After Bella's transformation, the Cullens gather allies to face the Volturi's false accusations."
       }
     ];
-    const moviesContainer=document.getElementById('movies');
-    const loading=document.getElementById('loading');
-    const noResults=document.getElementById('noResults');
-    const searchBar=document.getElementById('searchBar');
-    const clearSearch=document.getElementById('clearSearch');
-    const filterButtons=document.querySelectorAll('.filter-btn');
-    const darkToggle=document.getElementById('darkModeToggle');
 
-    const playbackModal=document.getElementById('playback-modal');
-    const closeModalBtn=document.getElementById('close-modal');
-    const modalVideo=document.getElementById('modal-video');
-    const modalTitle=document.getElementById('modal-title');
-    const qualityControls=document.getElementById('qualityControls');
-    const playerError=document.getElementById('playerError');
-    const prevBtn=document.getElementById('prevBtn');
-    const nextBtn=document.getElementById('nextBtn');
-    const fullscreenBtn=document.getElementById('fullscreenBtn');
-    const muteBtn=document.getElementById('muteBtn');
+    /* --- DOM refs --- */
+    const moviesContainer = document.getElementById('movies');
+    const loading = document.getElementById('loading');
+    const noResults = document.getElementById('noResults');
+    const searchBar = document.getElementById('searchBar');
+    const clearSearch = document.getElementById('clearSearch');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const darkToggle = document.getElementById('darkModeToggle');
 
-    let currentFilter='all',currentList=[],currentVideo=null;
+    // Modal & player refs
+    const playbackModal = document.getElementById('playback-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const playerArea = document.getElementById('player-area');
+    const progressFill = document.getElementById('progress-fill');
+    const progressBar = document.getElementById('progress-bar');
+    const modalTitle = document.getElementById('modal-title');
+    const modalSub = document.getElementById('modal-sub');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalPlayBtn = document.getElementById('modal-play');
+    const playText = document.getElementById('playText');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-    function isStream(u){return /\.(m3u8|txt)$/i.test(u);}
-    function isMP4(u){return /\.mp4(\?|$)/i.test(u);}
-    function showError(msg){playerError.textContent=msg;playerError.classList.remove('hidden');setTimeout(()=>playerError.classList.add('hidden'),3000);}
+    /* --- Playback state --- */
+    let currentList = [];    // filtered/search list
+    let currentIndex = null; // index in currentList
+    let currentHls = null;
 
-    document.addEventListener('DOMContentLoaded',()=>{
-      setTimeout(()=>{loading.classList.add('hidden');moviesContainer.classList.remove('hidden');renderMovies();},800);
-      if(localStorage.getItem('darkMode')==='true')toggleDark();
+    /* --- Type detection helpers (robust) --- */
+    function isHls(u){
+      if(!u) return false;
+      return u.includes('.m3u8') || u.includes('index-') || /index.*\.txt/i.test(u) || u.toLowerCase().includes('master.m3u8') || u.includes('manifest');
+    }
+    function isMP4(u){ return /\.mp4($|\?)/i.test(u||''); }
+    function isYouTube(u){ return !!(u && (u.includes('youtube.com') || u.includes('youtu.be') || u.includes('youtube-nocookie.com') || u.includes('/embed/'))); }
+
+    /* --- Player container helpers --- */
+    function resetPlayerContainer(){
+      // destroy hls if attached
+      if(currentHls){
+        try{ currentHls.destroy(); }catch(e){}
+        currentHls = null;
+      }
+      // replace innerHTML with a fresh <video> so Hls.js can reattach safely
+      playerArea.innerHTML = `<video id="modal-video" controls playsinline preload="metadata"></video>`;
+    }
+    function getModalVideo(){ return document.getElementById('modal-video'); }
+
+    /* --- Attach listeners to <video> --- */
+    function attachVideoListeners(){
+      const v = getModalVideo();
+      if(!v) return;
+
+      // Prevent attaching duplicates by cleaning up if attribute present
+      if(v.dataset.listenersAttached) return;
+      v.dataset.listenersAttached = '1';
+
+      v.addEventListener('timeupdate', () => {
+        if(!v.duration || !isFinite(v.duration)) return;
+        const pct = (v.currentTime / v.duration) * 100;
+        progressFill.style.width = pct + '%';
+      });
+
+      v.addEventListener('play', () => {
+        modalPlayBtn.innerHTML = '<i class="fas fa-pause mr-2"></i><span id="playText">Pause</span>';
+      });
+      v.addEventListener('pause', () => {
+        modalPlayBtn.innerHTML = '<i class="fas fa-play mr-2"></i><span id="playText">Play</span>';
+      });
+      v.addEventListener('ended', () => {
+        modalPlayBtn.innerHTML = '<i class="fas fa-redo mr-2"></i><span id="playText">Replay</span>';
+      });
+    }
+
+    /* --- Open / Close modal --- */
+    function showModal(){ playbackModal.classList.add('active'); document.body.style.overflow='hidden'; }
+    function hideModal(){ playbackModal.classList.remove('active'); document.body.style.overflow=''; }
+
+    function closeAndCleanup(){
+      // pause & cleanup
+      if(currentHls){ try{ currentHls.destroy(); }catch(e){} currentHls = null; }
+      const v = getModalVideo();
+      if(v){
+        try{ v.pause(); }catch(e){}
+        try{ v.removeAttribute('src'); v.load(); }catch(e){}
+      }
+      resetPlayerContainer();
+      progressFill.style.width = '0%';
+      currentIndex = null;
+      hideModal();
+      modalPlayBtn.innerHTML = '<i class="fas fa-play mr-2"></i><span id="playText">Play</span>';
+    }
+
+    /* --- Core playback function (Hawkeye-style) --- */
+    function playInModalByIndex(list, index){
+      if(!list || typeof index !== 'number' || index < 0 || index >= list.length) return;
+      const movie = list[index];
+      currentIndex = index;
+      modalTitle.textContent = movie.title || 'Untitled';
+      modalSub.textContent = (movie.year ? movie.year + ' • ' : '') + (movie.series ? movie.series : '');
+      modalDesc.textContent = movie.description || '';
+      progressFill.style.width = '0%';
+
+      // prepare player area
+      resetPlayerContainer();
+
+      const url = movie.video;
+      if(!url){
+        // no playable url
+        showModal();
+        modalDesc.textContent = 'No playable URL provided for this item.';
+        return;
+      }
+
+      // Hosts better embedded as iframe
+      const iframeHosts = ['streamtape.com','openload.co','vidcdn.','dood.', 'sbembed', 'drive.google.com','mega.nz','streamlare','mixdrop','rapidvideo'];
+      if(iframeHosts.some(h => url.includes(h))){
+        playerArea.innerHTML = `<iframe src="${url}" width="100%" height="100%" allowfullscreen allow="autoplay; encrypted-media" frameborder="0"></iframe>`;
+        showModal();
+        return;
+      }
+
+      // YouTube handling -> embed
+      if(isYouTube(url)){
+        try{
+          let embedUrl = url;
+          if(url.includes('watch') && url.includes('v=')){
+            const vid = new URLSearchParams(url.split('?')[1]).get('v');
+            if(vid) embedUrl = `https://www.youtube.com/embed/${vid}`;
+          } else if(url.includes('youtu.be/')){
+            const vid = url.split('youtu.be/')[1].split(/[?&]/)[0];
+            embedUrl = `https://www.youtube.com/embed/${vid}`;
+          }
+          playerArea.innerHTML = `<iframe src="${embedUrl}?autoplay=1&modestbranding=1&rel=0" width="100%" height="100%" allowfullscreen allow="autoplay; encrypted-media" frameborder="0"></iframe>`;
+          showModal();
+          return;
+        }catch(e){
+          // fallthrough to other handlers
+        }
+      }
+
+      // Now we expect to use the <video> element
+      const v = getModalVideo();
+
+      // HLS handling (also supports .txt index playlists that are HLS lists)
+      if(isHls(url)){
+        if(window.Hls && Hls.isSupported()){
+          try{
+            currentHls = new Hls();
+            currentHls.loadSource(url);
+            currentHls.attachMedia(v);
+            currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+              showModal();
+              attachVideoListeners();
+              v.play().catch(()=>{});
+            });
+            currentHls.on(Hls.Events.ERROR, (event, data) => {
+              if(data && data.fatal){
+                try{ currentHls.destroy(); }catch(e){}
+                currentHls = null;
+                // fallback: set src directly and try native playback
+                v.src = url;
+                showModal();
+                attachVideoListeners();
+                v.play().catch(()=>{});
+              }
+            });
+          }catch(e){
+            // fallback to direct src
+            v.src = url;
+            showModal();
+            attachVideoListeners();
+            v.play().catch(()=>{});
+          }
+        } else {
+          // Safari native HLS
+          v.src = url;
+          showModal();
+          attachVideoListeners();
+          v.play().catch(()=>{});
+        }
+        updateNavButtons();
+        return;
+      }
+
+      // MP4 fallback
+      if(isMP4(url)){
+        v.src = url;
+        showModal();
+        attachVideoListeners();
+        v.play().catch(()=>{});
+        updateNavButtons();
+        return;
+      }
+
+      // Unknown type -> redirect to player.html (preserve the app's existing fallback)
+      window.location.href = `player.html?title=${encodeURIComponent(movie.title)}&video=${encodeURIComponent(url)}`;
+    }
+
+    /* --- Play / Pause button behavior --- */
+    modalPlayBtn.addEventListener('click', () => {
+      // if iframe is present, do nothing (play handled by iframe)
+      if(playerArea.querySelector('iframe')) return;
+      const v = getModalVideo();
+      if(!v) return;
+      if(v.paused) v.play().catch(()=>{});
+      else v.pause();
     });
 
+    /* --- Prev / Next --- */
+    function updateNavButtons(){
+      prevBtn.disabled = (currentIndex === null || currentIndex <= 0);
+      nextBtn.disabled = (currentIndex === null || currentIndex >= (currentList.length - 1));
+    }
+    prevBtn.addEventListener('click', () => {
+      if(currentIndex === null) return;
+      if(currentIndex > 0) playInModalByIndex(currentList, currentIndex - 1);
+    });
+    nextBtn.addEventListener('click', () => {
+      if(currentIndex === null) return;
+      if(currentIndex < currentList.length - 1) playInModalByIndex(currentList, currentIndex + 1);
+    });
+
+    /* --- Mute / Fullscreen --- */
+    muteBtn.addEventListener('click', () => {
+      const v = getModalVideo();
+      if(!v) return;
+      v.muted = !v.muted;
+      muteBtn.innerHTML = v.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    });
+    fullscreenBtn.addEventListener('click', () => {
+      const elem = playerArea.querySelector('video') || playerArea.querySelector('iframe');
+      if(!elem) return;
+      if(!document.fullscreenElement) elem.requestFullscreen().catch(()=>{});
+      else document.exitFullscreen().catch(()=>{});
+    });
+
+    /* --- Close modal handlers --- */
+    closeModalBtn.addEventListener('click', closeAndCleanup);
+    playbackModal.addEventListener('click', (e) => { if(e.target === playbackModal) closeAndCleanup(); });
+    document.addEventListener('keydown', (e) => {
+      if(!playbackModal.classList.contains('active')) return;
+      if(e.key === 'Escape') closeAndCleanup();
+      if(e.key === ' '){ e.preventDefault(); const v = getModalVideo(); if(v) v.paused ? v.play() : v.pause(); }
+      if(e.key === 'ArrowRight'){ const v = getModalVideo(); if(v) v.currentTime += 10; }
+      if(e.key === 'ArrowLeft'){ const v = getModalVideo(); if(v) v.currentTime -= 10; }
+      if(e.key.toLowerCase() === 'n') nextBtn.click();
+      if(e.key.toLowerCase() === 'p') prevBtn.click();
+    });
+
+    /* --- Render movies (UI unchanged) --- */
     function renderMovies(){
-      let list=[...movies];
-      if(currentFilter!=='all')list=list.filter(m=>m.series===currentFilter);
-      const term=searchBar.value.toLowerCase();
-      if(term)list=list.filter(m=>m.title.toLowerCase().includes(term)||m.description.toLowerCase().includes(term));
-      moviesContainer.innerHTML='';
-      if(!list.length){noResults.classList.remove('hidden');moviesContainer.classList.add('hidden');return;}
-      noResults.classList.add('hidden');moviesContainer.classList.remove('hidden');
-      currentList=list;
-      list.forEach((m,i)=>{
-        const card=document.createElement('div');
-        card.className='movie-card bg-gray-900 rounded-lg overflow-hidden shadow-lg relative group';
-        card.innerHTML=`
+      let list = [...movies]; // movies is empty now until you paste it
+      // apply current filter (active filter button)
+      const activeFilterBtn = Array.from(filterButtons).find(b => b.classList.contains('active'));
+      const filter = activeFilterBtn ? activeFilterBtn.dataset.filter : 'all';
+      if(filter && filter !== 'all') list = list.filter(m => m.series === filter);
+
+      // search term
+      const q = (searchBar.value || '').trim().toLowerCase();
+      if(q) list = list.filter(m => (m.title||'').toLowerCase().includes(q) || (m.description||'').toLowerCase().includes(q));
+
+      currentList = list;
+      moviesContainer.innerHTML = '';
+
+      if(!list.length){
+        noResults.classList.remove('hidden');
+        moviesContainer.classList.add('hidden');
+        return;
+      }
+      noResults.classList.add('hidden');
+      moviesContainer.classList.remove('hidden');
+
+      list.forEach((m, idx) => {
+        const card = document.createElement('div');
+        card.className = 'movie-card bg-gray-900 rounded-lg overflow-hidden shadow-lg relative group';
+        card.innerHTML = `
           <div class="movie-poster relative overflow-hidden">
-            <img src="${m.image}" class="w-full h-64 object-cover transition duration-500 group-hover:opacity-80">
+            <img src="${m.image || ''}" class="w-full h-64 object-cover transition duration-500 group-hover:opacity-80" alt="${m.title || 'Untitled'}">
             <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent">
-              <div class="flex items-center"><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">${m.rating}/10</span><span class="text-white text-xs">${m.year}</span></div>
-              <h3 class="text-white font-semibold truncate">${m.title}</h3>
+              <div class="flex items-center"><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">${m.rating || '-'}/10</span><span class="text-white text-xs">${m.year || ''}</span></div>
+              <h3 class="text-white font-semibold truncate">${m.title || 'Untitled'}</h3>
             </div>
             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center">
               <button class="opacity-0 group-hover:opacity-100 bg-red-600 hover:bg-red-700 text-white rounded-full w-12 h-12 flex items-center justify-center"><i class="fas fa-play"></i></button>
             </div>
           </div>
-          <div class="p-3"><p class="text-gray-400 text-xs line-clamp-2">${m.description}</p></div>`;
-        card.addEventListener('click',()=>openPlaybackFor(list,i));
+          <div class="p-3"><p class="text-gray-400 text-xs line-clamp-2">${m.description || ''}</p></div>
+        `;
+        card.addEventListener('click', () => {
+          // if item is an HLS .txt manifest and original app wanted redirect behavior, Hawkeye approach handles most types in-modal.
+          // playInModalByIndex uses the movies list we rendered — pass currentList and index
+          playInModalByIndex(currentList, idx);
+        });
         moviesContainer.appendChild(card);
       });
     }
 
-    function openPlaybackFor(list,i){
-      const item=list[i]; if(!item)return;
-      const v=item.video;
-      let combined=''; if(typeof v==='object')combined=Object.values(v).join(' ');
-      if((typeof v==='string'&&isStream(v)&&!isMP4(v))||(typeof v==='object'&&isStream(combined)&&!isMP4(combined))){
-        const enc=encodeURIComponent(typeof v==='object'?combined:v);
-        window.location.href=`player.html?title=${encodeURIComponent(item.title)}&video=${enc}`;return;
-      }
-      playInModal(list,i);
-    }
+    /* --- Filters, Search, UI init --- */
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active','bg-red-600','text-white'));
+        btn.classList.add('active','bg-red-600','text-white');
+        renderMovies();
+      });
+    });
+    searchBar.addEventListener('input', renderMovies);
+    clearSearch.addEventListener('click', () => { searchBar.value = ''; renderMovies(); });
 
-    function playInModal(list,i){
-      const item=list[i];
-      modalTitle.textContent=item.title;
-      qualityControls.innerHTML='';
-      let src='';
-      if(typeof item.video==='object'){
-        for(const[k,u]of Object.entries(item.video)){
-          const b=document.createElement('button');
-          b.className='px-3 py-1 mx-1 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded';
-          b.textContent=k.toUpperCase();b.dataset.url=u;
-          qualityControls.appendChild(b);
-        }
-        src=item.video.high||item.video.medium||item.video.low||Object.values(item.video)[0];
-      }else src=item.video;
-      modalVideo.pause();modalVideo.src=src;
-      playbackModal.classList.remove('hidden');document.body.style.overflow='hidden';
-      currentVideo={list,index:i};
-      modalVideo.play().catch(()=>showError('Press play to start.'));
-      updateNavButtons();
-    }
+    /* --- Dark mode toggle --- */
+    darkToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    });
+    // restore dark mode
+    if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
 
-    function updateNavButtons(){prevBtn.disabled=currentVideo.index<=0;nextBtn.disabled=currentVideo.index>=currentVideo.list.length-1;}
-    function closeModal(){modalVideo.pause();modalVideo.src='';playbackModal.classList.add('hidden');document.body.style.overflow='';currentVideo=null;}
-    function toggleMute(){modalVideo.muted=!modalVideo.muted;muteBtn.innerHTML=modalVideo.muted?'<i class="fas fa-volume-mute mr-1"></i>Unmute':'<i class="fas fa-volume-up mr-1"></i>Mute';}
-    function fullscreen(){!document.fullscreenElement?modalVideo.requestFullscreen():document.exitFullscreen();}
-    function playNext(){if(currentVideo.index<currentVideo.list.length-1)playInModal(currentVideo.list,currentVideo.index+1);}
-    function playPrev(){if(currentVideo.index>0)playInModal(currentVideo.list,currentVideo.index-1);}
-
-    // events
-    closeModalBtn.onclick=closeModal;
-    prevBtn.onclick=playPrev;
-    nextBtn.onclick=playNext;
-    fullscreenBtn.onclick=fullscreen;
-    muteBtn.onclick=toggleMute;
-    playbackModal.addEventListener('click',e=>{if(e.target===playbackModal)closeModal();});
-    qualityControls.addEventListener('click',e=>{const u=e.target.dataset.url;if(u){const t=modalVideo.currentTime;modalVideo.src=u;modalVideo.currentTime=t;modalVideo.play();}});
-    document.addEventListener('keydown',e=>{
-      if(playbackModal.classList.contains('hidden'))return;
-      const k=e.key.toLowerCase();
-      if(k==='escape')closeModal();
-      if(k===' ') {e.preventDefault();modalVideo.paused?modalVideo.play():modalVideo.pause();}
-      if(k==='arrowright')modalVideo.currentTime+=10;
-      if(k==='arrowleft')modalVideo.currentTime-=10;
-      if(k==='n')playNext();
-      if(k==='p')playPrev();
-      if(k==='m')toggleMute();
-      if(k==='f')fullscreen();
+    /* --- Initial page load behavior --- */
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        loading.classList.add('hidden');
+        moviesContainer.classList.remove('hidden');
+        renderMovies();
+      }, 600);
     });
 
-    // search/filter
-    searchBar.oninput=renderMovies;
-    clearSearch.onclick=()=>{searchBar.value='';renderMovies();};
-    filterButtons.forEach(b=>b.onclick=()=>{filterButtons.forEach(x=>x.classList.remove('active','bg-red-600','text-white'));b.classList.add('active','bg-red-600','text-white');currentFilter=b.dataset.filter;renderMovies();});
-    darkToggle.onclick=toggleDark;
-    function toggleDark(){document.body.classList.toggle('dark-mode');localStorage.setItem('darkMode',document.body.classList.contains('dark-mode'));}
+    /* Expose helpers for debugging */
+    window.playInModalByIndex = playInModalByIndex;
+    window.resetPlayerContainer = resetPlayerContainer;
+    window.closeAndCleanup = closeAndCleanup;
   </script>
 </body>
 </html>
